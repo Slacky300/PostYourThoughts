@@ -30,7 +30,7 @@ const YourThoughts = () => {
 
             try {
                 setLoading(true);
-                const res = await fetch(process.env.REACT_APP_BACKEND_URL + '/posts', {
+                const res = await fetch(process.env.REACT_APP_BACKEND_URL + '/posts/userPosts', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
