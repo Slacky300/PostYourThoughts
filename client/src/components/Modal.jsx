@@ -8,6 +8,7 @@ const Modal = (props) => {
     const [updateContent, setUpdateContent] = useState("");
     const [updateTitle, setUpdateTitle] = useState("");
 
+    const [loading, setLoading] = useState(false);
     const {triggerUpdate} = useUpdate();
     useEffect(() => {
         setUpdateContent(props.thoughtContent);
@@ -16,6 +17,7 @@ const Modal = (props) => {
     const handleEdit = async (e) => {
         try {
             e.preventDefault();
+            setLoading(true)
             const res = await fetch(process.env.REACT_APP_BACKEND_URL + '/posts/update/' + props._id, {
                 method: 'PUT',
                 headers: {
@@ -36,7 +38,10 @@ const Modal = (props) => {
             }
         } catch (err) {
             toast.error("Something went Wrong!");
+        }finally{
+            setLoading(false);
         }
+
     }
 
     const handleDelete = async (e) => {
@@ -96,7 +101,9 @@ const Modal = (props) => {
                                         </div>
                                         <div className="modal-footer">
                                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" className="btn btn-success" >Save changes</button>
+                                        <button type="submit" className="btn btn-success" disabled={loading}>{loading?(<>
+                  Saving...
+                </>):(<>Save changes</>)}</button>
                                     </div>
                                     </form>
                                     

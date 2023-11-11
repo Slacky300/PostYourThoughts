@@ -3,11 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const Register = () => {
+
     const [user, setUser] = useState({
         username: '',
         email: '',
         password: ''
     });
+
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
@@ -16,7 +19,11 @@ const Register = () => {
     };
 
     const handleSubmit = async (e) => {
+
         e.preventDefault();
+
+        setLoading(true);
+
         if (user.username.length < 3) {
             toast.error('Name should be at least 3 characters long');
             return;
@@ -28,11 +35,14 @@ const Register = () => {
         }
 
         const emailRegex = /^\S+@\S+\.\S+$/;
+
         if (!emailRegex.test(user.email)) {
             toast.error('Please enter a valid email');
             return;
         }
+
         try {
+
             const res = await fetch(process.env.REACT_APP_BACKEND_URL + '/users/register', {
                 method: 'POST',
                 headers: {
@@ -56,6 +66,12 @@ const Register = () => {
         } catch (err) {
             console.log(err);
             toast.error('Something Went Wrong');
+
+        }finally{
+
+
+            setLoading(false);
+
         }
     };
 
@@ -72,7 +88,9 @@ const Register = () => {
                         <label htmlFor="password" className="form-label">Password</label>
                         <input type="password" name="password" required className="form-control" value={user.password} onChange={handleInputChange} id="password" placeholder="Password" />
                     </div>
-                    <button className='btn btn-primary' type='submit'>Register</button>
+                    <button className='btn btn-primary' disabled={loading} type='submit'>{loading?(<>
+                        Registering...
+                </>):(<>Register</>)}</button>
                 </form>
             </div>
         </div>

@@ -10,6 +10,8 @@ const AddThoughts = () => {
     content:""
   });
 
+  const [loading,setLoading] = useState(false);
+
   const navigate = useNavigate(); 
 
 
@@ -36,6 +38,8 @@ const AddThoughts = () => {
       return;
     }
     try {
+      setLoading(true);
+
       const res = await fetch(process.env.REACT_APP_BACKEND_URL+'/posts/add', {
 
         method: 'POST',
@@ -55,6 +59,8 @@ const AddThoughts = () => {
     }catch(err){
       console.log(err);
       toast.error('Something Went Wrong');
+    }finally{
+      setLoading(false);
     }
   }
 
@@ -69,7 +75,9 @@ const AddThoughts = () => {
                     <label htmlFor="exampleFormControlTextarea1" className="form-label">Add Your Thoughts ({thoughts.content.length}/500)</label>
                     <textarea className="form-control" name='content' required value={thoughts.content} onChange={handleInput} id="exampleFormControlTextarea1" rows="3"></textarea>
                 </div>
-                <button className='btn btn-primary' type='submit'>Post</button>
+                <button className='btn btn-primary' disabled={loading} type='submit'>{loading?(<>
+                  Posting...
+                </>):(<>Post</>)}</button>
             </form>
         </div>
     </div>

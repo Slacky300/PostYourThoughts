@@ -8,8 +8,11 @@ const Login = () => {
         email: '',
         password: ''
     });
+    const [loading,setLoading] = useState(false);
+
     const [auth, setAuth] = useAuth();
     const navigate = useNavigate();
+
     const handleInputChange = (e) => {
         setUser({ ...user, [e.target.name]: e.target.value });
     }
@@ -17,6 +20,7 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try{
+            setLoading(true)
             const res = await fetch(process.env.REACT_APP_BACKEND_URL+'/users/login', {
                 method: 'POST',
                 headers: {
@@ -41,6 +45,8 @@ const Login = () => {
         }catch(err){
             console.log(err);
             toast.error('Something Went Wrong');
+        }finally{
+            setLoading(false)
         }
     }
   return (
@@ -54,7 +60,9 @@ const Login = () => {
                     <label htmlFor="exampleFormControlInput1" className="form-label">Password</label>
                     <input type="password" name='password' required className="form-control" value={user.password} onChange={handleInputChange} id="exampleFormControlInput1" placeholder="Password" />
                 </div>
-                <button className='btn btn-primary' type='submit'>Login</button>
+                <button className='btn btn-primary' disabled={loading} type='submit'>{loading?(<>
+                    Logging In...
+                </>):(<>Login</>)}</button>
             </form>
         </div>
     </div>
