@@ -3,12 +3,14 @@ const {dbConnect} = require('./utils/dbConnect');
 const userRoutes = require('./routes/userRoutes');
 const postRoutes = require('./routes/postRoutes');
 const cors = require('cors');
-
+const path = require('path');
 
 require('dotenv').config();
 
 
 const app = express();
+
+app.use(express.static(path.join(__dirname, '../client/build')));
 
 
 const PORT = process.env.PORT || 8000;
@@ -28,6 +30,10 @@ const startServer = () => {
 
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/posts', postRoutes);
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
 
 
 startServer();  
